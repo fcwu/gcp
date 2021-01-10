@@ -20,7 +20,9 @@ HAVING avg_products_ordered > 20
 ORDER BY avg_products_ordered DESC
 ```
 
-## Big Data Analysis to a Slide Presentation 
+## Big Data Analysis to a Slide Presentation
+
+Apps Script
 
 http://script.google.com/
 
@@ -320,7 +322,7 @@ function createBigQueryPresentation() {
 }
 ```
 
-## Explore and Create Reports with Data Studio 
+## Explore and Create Reports with Data Studio
 
 https://datastudio.google.com/
 
