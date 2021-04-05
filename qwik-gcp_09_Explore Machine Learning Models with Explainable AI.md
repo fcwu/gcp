@@ -21,8 +21,6 @@ In AI Platform Notebooks, navigate to training-data-analyst/self-paced-labs/ai-p
 
 ## Using the What-If Tool with Image Recognition Models
 
-
-
 ## Identifying Bias in Mortgage Data using Cloud AI Platform and the What-if Tool
 
 ## Compare Cloud AI Platform Models using the What-If Tool to Identify Potential Bias

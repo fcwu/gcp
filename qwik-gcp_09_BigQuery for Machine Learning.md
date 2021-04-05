@@ -1,14 +1,16 @@
 # BigQuery for Machine Learning
 
+[qwikilabs](https://www.qwiklabs.com/quests/71)
+
 ## Getting Started with BQML
 
 - TP(True Positive), TN(True Negative), FP(False Positive), FN(False Negative)
 - Recall(召回率) = TP/(TP+FN)
 - Precision(準確率) = TP/(TP+FP)
-- F1-score = 2 * Precision * Recall / (Precision + Recall)
-- 一個Precision高而Recall低的模型: 雖然常常沒辦法抓出命名實體，但只要有抓出幾乎都是正確的(Precision高)
-- 一個Recall高而Precision低的模型: 雖然有時候會抓錯，但幾乎該抓的都有抓到(Recall高)
-- F1-score則是兩者的調和平均數，算是一個比較概略的指標來看這個模型的表現
+- F1-score = 2 _ Precision _ Recall / (Precision + Recall)
+- 一個 Precision 高而 Recall 低的模型: 雖然常常沒辦法抓出命名實體，但只要有抓出幾乎都是正確的(Precision 高)
+- 一個 Recall 高而 Precision 低的模型: 雖然有時候會抓錯，但幾乎該抓的都有抓到(Recall 高)
+- F1-score 則是兩者的調和平均數，算是一個比較概略的指標來看這個模型的表現
 
 ```bash
 #standardSQL
@@ -165,7 +167,7 @@ GROUP BY will_buy_on_return_visit
 
 ### Identify an objective
 
-Create Machine Learning model in BigQuery to predict whether or not a new user is likely to purchase in the future. 
+Create Machine Learning model in BigQuery to predict whether or not a new user is likely to purchase in the future.
 
 ### Select features and create your training dataset
 
@@ -212,7 +214,7 @@ Answer: It's often too early to tell before training and evaluating the model, b
 ### Select a BQML model type and specify options
 
 | Model          | Model Type   | Label Data type                                        | Example                                                           |
-|----------------|--------------|--------------------------------------------------------|-------------------------------------------------------------------|
+| -------------- | ------------ | ------------------------------------------------------ | ----------------------------------------------------------------- |
 | Forecasting    | linear_reg   | Numeric value (typically an integer or floating point) | Forecast sales figures for next year given historical sales data. |
 | Classification | logistic_reg | 0 or 1 for binary classification                       | Classify an email as spam or not spam given the context.          |
 
@@ -644,7 +646,7 @@ WITH params AS (
 
   SELECT *
   FROM taxitrips
-  ```
+```
 
 ### Evaluate
 
@@ -1046,12 +1048,12 @@ FROM
 
 ```
 
-- Precision : A metric for classification models. Precision identifies the frequency with which a model was correct when predicting the positive class. 
-- Recall : A metric for classification models that answers the following question: Out of all the possible positive labels, how many did the model correctly identify? 
-- Accuracy : Accuracy is the fraction of predictions that a classification model got right. 
-- f1_score : A measure of the accuracy of the model. The f1 score is the harmonic average of the precision and recall. An f1 score's best value is 1. The worst value is 0. 
-- log_loss : The loss function used in a logistic regression. This is the measure of how far the model's predictions are from the correct labels. 
-- roc_auc : The area under the ROC curve. This is the probability that a classifier is more confident that a randomly chosen positive example is actually positive than that a randomly chosen negative example is positive. 
+- Precision : A metric for classification models. Precision identifies the frequency with which a model was correct when predicting the positive class.
+- Recall : A metric for classification models that answers the following question: Out of all the possible positive labels, how many did the model correctly identify?
+- Accuracy : Accuracy is the fraction of predictions that a classification model got right.
+- f1_score : A measure of the accuracy of the model. The f1 score is the harmonic average of the precision and recall. An f1 score's best value is 1. The worst value is 0.
+- log_loss : The loss function used in a logistic regression. This is the measure of how far the model's predictions are from the correct labels.
+- roc_auc : The area under the ROC curve. This is the probability that a classifier is more confident that a randomly chosen positive example is actually positive than that a randomly chosen negative example is positive.
 
 ### Making predictions
 
@@ -1555,20 +1557,20 @@ index.js
 
 ```javascript
 /**
-* Copyright 2020 Google Inc. All Rights Reserved.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*    http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2020 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 "use strict";
 
@@ -1578,68 +1580,71 @@ const { Card, Payload } = require("dialogflow-fulfillment");
 const { BigQuery } = require("@google-cloud/bigquery");
 
 const bigquery = new BigQuery({
-    projectId: "your-project-id" // ** CHANGE THIS **
+  projectId: "your-project-id", // ** CHANGE THIS **
 });
 
 process.env.DEBUG = "dialogflow:debug";
 
 function welcome(agent) {
-    agent.add(`Welcome to my agent!`);
+  agent.add(`Welcome to my agent!`);
 }
 
 function fallback(agent) {
-    agent.add(`I didn't understand`);
-    agent.add(`I'm sorry, can you try again?`);
+  agent.add(`I didn't understand`);
+  agent.add(`I'm sorry, can you try again?`);
 }
 
-
 async function etaPredictionFunction(agent) {
-
-    const issueCategory = agent.getContext('submitticket-email-followup').parameters.category;
-    const sqlQuery = `WITH pred_table AS (SELECT 5 as seniority, "3-Advanced" as experience,
+  const issueCategory = agent.getContext("submitticket-email-followup")
+    .parameters.category;
+  const sqlQuery = `WITH pred_table AS (SELECT 5 as seniority, "3-Advanced" as experience,
     @category as category, "Request" as type)
     SELECT cast(predicted_label as INT64) as predicted_label
     FROM ML.PREDICT(MODEL helpdesk.predict_eta,  TABLE pred_table)`;
-    const options = {
-        query: sqlQuery,
-        location: "US",
-        params: {
-            category: issueCategory
-        }
-    };
+  const options = {
+    query: sqlQuery,
+    location: "US",
+    params: {
+      category: issueCategory,
+    },
+  };
 
-    const [rows] = await bigquery.query(options);
+  const [rows] = await bigquery.query(options);
 
-    return rows;
+  return rows;
 }
 
 async function ticketCollection(agent) {
+  const email = agent.getContext("submitticket-email-followup").parameters
+    .email;
+  const issueCategory = agent.getContext("submitticket-email-followup")
+    .parameters.category;
 
-    const email = agent.getContext('submitticket-email-followup').parameters.email;
-    const issueCategory = agent.getContext('submitticket-email-followup').parameters.category;
+  let etaPrediction = await etaPredictionFunction(agent);
 
-    let etaPrediction = await etaPredictionFunction(agent);
+  agent.setContext({
+    name: "submitticket-collectname-followup",
+    lifespan: 2,
+  });
 
-    agent.setContext({
-        name: "submitticket-collectname-followup",
-        lifespan: 2
-    });
-
-    agent.add(`Your ticket has been created. Someone will contact you shortly at ${email}. 
+  agent.add(`Your ticket has been created. Someone will contact you shortly at ${email}. 
     The estimated response time is ${etaPrediction[0].predicted_label} days.`);
-
 }
 
-exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
+exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
+  (request, response) => {
     const agent = new WebhookClient({ request, response });
-    console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
-    console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
+    console.log(
+      "Dialogflow Request headers: " + JSON.stringify(request.headers)
+    );
+    console.log("Dialogflow Request body: " + JSON.stringify(request.body));
     let intentMap = new Map();
     intentMap.set("Default Welcome Intent", welcome);
     intentMap.set("Default Fallback Intent", fallback);
     intentMap.set("Submit Ticket - Issue Category", ticketCollection);
     agent.handleRequest(intentMap);
-});
+  }
+);
 ```
 
 package.json

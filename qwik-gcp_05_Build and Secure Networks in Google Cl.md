@@ -1,5 +1,7 @@
 # Build and Secure Networks in Google Cloud
 
+[Build and Secure Networks in Google Cloud](https://www.qwiklabs.com/quests/128)
+
 ## User Authentication: Identity-Aware Proxy
 
 - Deploy Application and Protect it with IAP

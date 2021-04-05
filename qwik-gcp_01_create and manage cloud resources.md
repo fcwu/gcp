@@ -1,5 +1,7 @@
 # Create and manage cloud resources
 
+[Create and manage cloud resources](https://www.qwiklabs.com/quests/120)
+
 ## A Tour of Qwiklabs and Google Cloud
 
 https://cloud.google.com/docs/overview/cloud-platform-services#top_of_page
@@ -63,58 +65,12 @@ gcloud container clusters delete
 
 ## Set Up Network and HTTP Load Balancers
 
-There are several ways you can load balance in Google Cloud. This lab takes you through the setup of the following load balancers.:
+There are several ways you can load balance in Google Cloud. This lab takes you through the setup of the following load balancers.
 
-### L4 Network Load Balancer
+- Network Load Balancer
+- HTTP(s) Load Balancer
 
-```bash
-cat << EOF > startup.sh
-#! /bin/bash
-apt-get update
-apt-get install -y nginx
-service nginx start
-sed -i -- 's/nginx/Google Cloud Platform - '"\$HOSTNAME"'/' /var/www/html/index.nginx-debian.html
-EOF
-gcloud compute instance-templates create nginx-template \
-         --metadata-from-file startup-script=startup.sh
-gcloud compute target-pools create nginx-pool
-gcloud compute instance-groups managed create nginx-group \
-         --base-instance-name nginx \
-         --size 2 \
-         --template nginx-template \
-         --target-pool nginx-pool
-gcloud compute instances list
-gcloud compute firewall-rules create www-firewall --allow tcp:80
-gcloud compute forwarding-rules create nginx-lb \
-         --region us-central1 \
-         --ports=80 \
-         --target-pool nginx-pool
-gcloud compute forwarding-rules list
 ```
-
-### L7 HTTP(s) Load Balancer
-
-```bash
-gcloud compute http-health-checks create http-basic-check
-gcloud compute instance-groups managed \
-       set-named-ports nginx-group \
-       --named-ports http:80
-gcloud compute backend-services create nginx-backend \
-      --protocol HTTP --http-health-checks http-basic-check --global
-gcloud compute backend-services add-backend nginx-backend \
-    --instance-group nginx-group \
-    --instance-group-zone asia-east1-b \
-    --global
-gcloud compute url-maps create web-map \
-    --default-service nginx-backend
-gcloud compute target-http-proxies create http-lb-proxy \
-    --url-map web-map
-gcloud compute forwarding-rules create http-content-rule \
-        --global \
-        --target-http-proxy http-lb-proxy \
-        --ports 80
-gcloud compute forwarding-rules list
-
 Compute Engine
     -> instance groups (instance-group, instance-templates)
         -> nginx-group
@@ -133,6 +89,187 @@ Network Services
     -> backends (target-pools, backend-services)
         -> nginx-backend (in: instance-group, http-health-checks)
 ```
+
+### L4 Network Load Balancer
+
+1. Create 3 instances
+
+   ```bash
+   for i in `seq 3`; do
+       gcloud compute instances create www$i \
+       --image-family debian-9 \
+       --image-project debian-cloud \
+       --zone us-central1-a \
+       --tags network-lb-tag \
+       --metadata startup-script="#! /bin/bash
+           sudo apt-get update
+           sudo apt-get install apache2 -y
+           sudo service apache2 restart
+           echo '<!doctype html><html><body><h1>www$i</h1></body></html>' | tee /var/www/html/index.html"
+   done
+   ```
+
+2. Create a firewall rule
+
+   ```bash
+   gcloud compute firewall-rules create www-firewall-network-lb \
+       --target-tags network-lb-tag --allow tcp:80
+   ```
+
+3. check liveness
+
+   ```bash
+   gcloud compute instances list
+   curl http://[IP_ADDRESS]
+   ```
+
+4. Create a static external IP address for your load balancer:
+
+   ```bash
+   gcloud compute addresses create network-lb-ip-1 \
+   --region us-central1
+   ```
+
+5. Add a legacy HTTP health check resource:
+
+   ```bash
+   gcloud compute http-health-checks create basic-check
+   ```
+
+6. Add a target pool in the same region as your instances.
+
+   ```bash
+   gcloud compute target-pools create www-pool \
+       --region us-central1 --http-health-check basic-check
+   ```
+
+7. Add the instances to the pool
+
+   ```bash
+   gcloud compute target-pools add-instances www-pool \
+       --instances www1,www2,www3
+   ```
+
+8. Add a forwarding rule
+
+   ```bash
+   gcloud compute forwarding-rules create www-rule \
+       --region us-central1 \
+       --ports 80 \
+       --address network-lb-ip-1 \
+       --target-pool www-pool
+   ```
+
+9. test
+
+   ```bash
+   gcloud compute forwarding-rules describe www-rule --region us-central1
+   while true; do curl -m1 IP_ADDRESS; done
+   ```
+
+### L7 HTTP(s) Load Balancer
+
+1. First, create the load balancer template:
+
+   ```bash
+   gcloud compute instance-templates create lb-backend-template \
+       --region=us-central1 \
+       --network=default \
+       --subnet=default \
+       --tags=allow-health-check \
+       --image-family=debian-9 \
+       --image-project=debian-cloud \
+       --metadata=startup-script='#! /bin/bash
+           apt-get update
+           apt-get install apache2 -y
+           a2ensite default-ssl
+           a2enmod ssl
+           vm_hostname="$(curl -H "Metadata-Flavor:Google" \
+           http://169.254.169.254/computeMetadata/v1/instance/name)"
+           echo "Page served from: $vm_hostname" | \
+           tee /var/www/html/index.html
+           systemctl restart apache2'
+   ```
+
+2. Create a managed instance group based on the template:
+
+   ```bash
+   gcloud compute instance-groups managed create lb-backend-group \
+   --template=lb-backend-template --size=2 --zone=us-central1-a
+   ```
+
+3. Create the fw-allow-health-check firewall rule.
+
+   ```bash
+   gcloud compute firewall-rules create fw-allow-health-check \
+       --network=default \
+       --action=allow \
+       --direction=ingress \
+       --source-ranges=130.211.0.0/22,35.191.0.0/16 \
+       --target-tags=allow-health-check \
+       --rules=tcp:80
+   ```
+
+4. Now that the instances are up and running, set up a global static external IP address that your customers use to reach your load balancer.
+
+   ```bash
+   gcloud compute addresses create lb-ipv4-1 \
+       --ip-version=IPV4 \
+       --global
+   gcloud compute addresses describe lb-ipv4-1 \
+       --format="get(address)" \
+       --global
+   ```
+
+5. Create a healthcheck for the load balancer:
+
+   ```bash
+   gcloud compute health-checks create http http-basic-check \
+       --port 80
+   ```
+
+6. Create a backend service
+
+```bash
+    gcloud compute backend-services create web-backend-service \
+        --protocol=HTTP \
+        --port-name=http \
+        --health-checks=http-basic-check \
+        --global
+```
+
+7. Add your instance group as the backend to the backend service:
+
+   ```bash
+   gcloud compute backend-services add-backend web-backend-service \
+       --instance-group=lb-backend-group \
+       --instance-group-zone=us-central1-a \
+       --global
+   ```
+
+8. Create a URL map to route the incoming requests to the default backend service:
+
+   ```bash
+   gcloud compute url-maps create web-map-http \
+       --default-service web-backend-service
+   ```
+
+9. Create a target HTTP proxy to route requests to your URL map:
+
+   ```bash
+   gcloud compute target-http-proxies create http-lb-proxy \
+       --url-map web-map-http
+   ```
+
+10. Create a global forwarding rule to route incoming requests to the proxy:
+
+    ```bash
+    gcloud compute forwarding-rules create http-content-rule \
+        --address=lb-ipv4-1\
+        --global \
+        --target-http-proxy=http-lb-proxy \
+        --ports=80
+    ```
 
 ## Getting Started: Create and Manage Cloud Resources: Challenge Lab
 

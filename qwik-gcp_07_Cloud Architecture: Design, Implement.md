@@ -1,6 +1,8 @@
 # Cloud Architecture: Design, Implement, and Manage
 
-## Google Cloud Essential Skills: Challenge Lab 
+[Cloud Architecture: Design, Implement, and Manage](https://www.qwiklabs.com/quests/124)
+
+## Google Cloud Essential Skills: Challenge Lab
 
 ## Deploy a Compute Instance with a Remote Startup Script
 

@@ -1,5 +1,7 @@
 # Build and Optimize Data Warehouses with BigQuery
 
+[qwiki page](https://www.qwiklabs.com/quests/147)
+
 ## BigQuery: Qwik Start - Command Line
 
 ```bash
@@ -41,9 +43,7 @@ https://console.cloud.google.com/bigquery?p=data-to-insights&page=ecommerce
 
 ### Enrich ecommerce data with Machine Learning
 
-https://cloud.google.com/natural-language/
-
-API to find document
+[natural language](https://cloud.google.com/natural-language/) to find document
 
 1. entities
 2. sentiment with score and magnitude
@@ -199,7 +199,7 @@ WHERE date_formatted = '2016-08-01'
  FROM `bigquery-public-data.noaa_gsod.gsod*` AS weather
  WHERE prcp < 99.9  -- Filter unknown values
    AND prcp > 0      -- Filter
-   AND CAST(_TABLE_SUFFIX AS int64) >= 2018 
+   AND CAST(_TABLE_SUFFIX AS int64) >= 2018
 ```
 
 verify 60 days expired
@@ -504,9 +504,9 @@ UPDATE
     `covid.oxford` t0
 SET
     ecdc_new_cases = t2.daily_confirmed_cases
-FROM 
+FROM
     covid.oxford t1
-    LEFT JOIN 
+    LEFT JOIN
     (SELECT DISTINCT country_territory_code, daily_confirmed_cases FROM `bigquery-public-data.covid19_ecdc.covid_19_geographic_distribution_worldwide`) AS t2
      ON t1.alpha_3_code = t2.country_territory_code
 WHERE CONCAT(t0.country_name, t0.date) = CONCAT(t1.country_name, t1.date);
@@ -515,7 +515,7 @@ WHERE CONCAT(t0.country_name, t0.date) = CONCAT(t1.country_name, t1.date);
 The above template updates a daily new case column so you must modify it before you can use it to populate the population data from the European Center for Disease Control COVID 19 public dataset
 
 ```text
-New Column Name          SQL Data Type 
+New Column Name          SQL Data Type
 population               INTEGER
 country_area             FLOAT
 mobility                 RECORD
@@ -528,7 +528,7 @@ mobility.avg_residential FLOAT
 ```
 
 ```bash
- SELECT country_region, date, 
+ SELECT country_region, date,
       AVG(retail_and_recreation_percent_change_from_baseline) as avg_retail,
       AVG(grocery_and_pharmacy_percent_change_from_baseline)  as avg_grocery,
       AVG(parks_percent_change_from_baseline) as avg_parks,
@@ -617,21 +617,21 @@ WHERE TRUE
 
 ### Task 5: Populate the mobility record data
 
-SELECT country_region, date, 
-      AVG(retail_and_recreation_percent_change_from_baseline) as avg_retail,
-      AVG(grocery_and_pharmacy_percent_change_from_baseline)  as avg_grocery,
-      AVG(parks_percent_change_from_baseline) as avg_parks,
-      AVG(transit_stations_percent_change_from_baseline) as avg_transit,
-      AVG( workplaces_percent_change_from_baseline ) as avg_workplace,
-      AVG( residential_percent_change_from_baseline)  as avg_residential
-      FROM `bigquery-public-data.covid19_google_mobility.mobility_report`
-      where country_region = "Brazil"
-      GROUP BY country_region, date 
-      order by country_region
+SELECT country_region, date,
+AVG(retail_and_recreation_percent_change_from_baseline) as avg_retail,
+AVG(grocery_and_pharmacy_percent_change_from_baseline) as avg_grocery,
+AVG(parks_percent_change_from_baseline) as avg_parks,
+AVG(transit_stations_percent_change_from_baseline) as avg_transit,
+AVG( workplaces_percent_change_from_baseline ) as avg_workplace,
+AVG( residential_percent_change_from_baseline) as avg_residential
+FROM `bigquery-public-data.covid19_google_mobility.mobility_report`
+where country_region = "Brazil"
+GROUP BY country_region, date
+order by country_region
 
 ```bash
 UPDATE `qwiklabs-gcp-00-acf08aca0012.mycovid.partition_by_day` as t1
-SET 
+SET
     mobility.avg_retail = (
         SELECT AVG(retail_and_recreation_percent_change_from_baseline)
         FROM `bigquery-public-data.covid19_google_mobility.mobility_report` as t2

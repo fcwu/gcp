@@ -1,5 +1,7 @@
 # Baseline: Data, ML, AI
 
+[qwikilabs](https://www.qwiklabs.com/quests/34)
+
 ## AI Platform: Qwik Start
 
 - Click on the Navigation Menu and navigate to AI Platform, then to Notebooks.

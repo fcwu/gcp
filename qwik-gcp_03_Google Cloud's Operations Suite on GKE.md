@@ -1,31 +1,33 @@
 # Google Cloud's Operations Suite on GKE
 
+[Google Cloud's Operations Suite on GKE](https://www.qwiklabs.com/quests/133)
+
 ## Monitoring GKE with Prometheus and Cloud Monitoring
 
 export PROJECT_ID=qwiklabs-gcp-04-e23c17625801
 gcloud services enable compute.googleapis.com container.googleapis.com spanner.googleapis.com cloudprofiler.googleapis.com
 git clone https://github.com/saturnism/spring-petclinic-gcp
 gcloud container clusters create petclinic \
-    --region=us-central1 \
-    --num-nodes=2 \
-    --machine-type=n1-standard-2 \
-    --enable-autorepair \
-    --enable-stackdriver-kubernetes \
-    --cluster-version "1.15.12-gke.6001"
+ --region=us-central1 \
+ --num-nodes=2 \
+ --machine-type=n1-standard-2 \
+ --enable-autorepair \
+ --enable-stackdriver-kubernetes \
+ --cluster-version "1.15.12-gke.6001"
 
 ### Set up Cloud Monitoring
 
 kubectl apply -f https://storage.googleapis.com/stackdriver-kubernetes/freshness-fixes/rbac-setup.yaml --as=admin --as-group=system:masters
 kubectl create configmap \
-  --namespace=stackdriver-agents \
-  google-cloud-config \
-  --from-literal=project_id=$PROJECT_ID \
-  --from-literal=credentials_path=""
+ --namespace=stackdriver-agents \
+ google-cloud-config \
+ --from-literal=project_id=$PROJECT_ID \
+ --from-literal=credentials_path=""
 kubectl create configmap \
-  --namespace=stackdriver-agents \
-  cluster-config \
-  --from-literal=cluster_name=petclinic \
-  --from-literal=cluster_location=us-central1
+ --namespace=stackdriver-agents \
+ cluster-config \
+ --from-literal=cluster_name=petclinic \
+ --from-literal=cluster_location=us-central1
 kubectl apply -f https://storage.googleapis.com/stackdriver-kubernetes/freshness-fixes/agents.yaml
 kubectl get pods --namespace=stackdriver-agents
 
@@ -33,9 +35,9 @@ kubectl get pods --namespace=stackdriver-agents
 
 kubectl apply -f https://storage.googleapis.com/spls/gsp243/rbac-setup.yaml --as=admin --as-group=system:masters
 curl -s https://storage.googleapis.com/spls/gsp243/prometheus-service.yaml | \
-  sed -e "s/\(\s*_kubernetes_cluster_name:*\).*/\1 'petclinic'/g" | \
-  sed -e "s/\(\s*_kubernetes_location:*\).*/\1 'us-central1'/g" | \
-  sed -e "s/\(\s*_stackdriver_project_id:*\).*/\1 '${PROJECT_ID}'/g" | \
+ sed -e "s/\(\s*\_kubernetes_cluster_name:*\)._/\1 'petclinic'/g" | \
+ sed -e "s/\(\s_\_kubernetes*location:*\).\_/\1 'us-central1'/g" | \
+ sed -e "s/\(\s*\_stackdriver_project_id:*\).\*/\1 '${PROJECT_ID}'/g" | \
   kubectl apply -f -
 cd ~/
 export ISTIO_VERSION=0.7.1
@@ -52,24 +54,23 @@ gcloud spanner databases ddl update petclinic --instance=petclinic --ddl='CREATE
 gcloud spanner databases ddl update petclinic --instance=petclinic --ddl='CREATE INDEX vets_by_last_name ON vets(last_name);'
 gcloud spanner databases ddl update petclinic --instance=petclinic --ddl='CREATE TABLE visits (owner_id STRING(36) NOT NULL, pet_id STRING(36) NOT NULL, visit_id STRING(36) NOT NULL, date DATE NOT NULL, description STRING(MAX) NOT NULL,) PRIMARY KEY (owner_id, pet_id, visit_id), INTERLEAVE IN PARENT pets ON DELETE CASCADE;'
 
-
 ### Generate a service account and grant appropriate permissions
 
 gcloud iam service-accounts create petclinic --display-name "Petclinic Service Account"
 gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member serviceAccount:petclinic@$PROJECT_ID.iam.gserviceaccount.com \
-     --role roles/cloudprofiler.agent
+ --role roles/cloudprofiler.agent
 gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member serviceAccount:petclinic@$PROJECT_ID.iam.gserviceaccount.com \
-     --role roles/clouddebugger.agent
+ --role roles/clouddebugger.agent
 gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member serviceAccount:petclinic@$PROJECT_ID.iam.gserviceaccount.com \
-     --role roles/cloudtrace.agent
+ --role roles/cloudtrace.agent
 gcloud projects add-iam-policy-binding $PROJECT_ID \
      --member serviceAccount:petclinic@$PROJECT_ID.iam.gserviceaccount.com \
-     --role roles/spanner.databaseUser
+ --role roles/spanner.databaseUser
 gcloud iam service-accounts keys create ~/petclinic-service-account.json \
-    --iam-account petclinic@$PROJECT_ID.iam.gserviceaccount.com
+ --iam-account petclinic@$PROJECT_ID.iam.gserviceaccount.com
 gcloud iam service-accounts keys create ~/petclinic-service-account.json \
     --iam-account petclinic@$PROJECT_ID.iam.gserviceaccount.com
 kubectl create secret generic petclinic-credentials --from-file=$HOME/petclinic-service-account.json
@@ -97,19 +98,32 @@ gcloud config set compute/zone us-central1-a
 
 ## Using Cloud Trace on Kubernetes Engine
 
+The lab begins by deploying a Kubernetes Engine cluster. To this cluster will be deployed a simple web application fronted by a load balancer. The web app will publish messages provided by the user to a Cloud Pub/Sub topic. The application is instrumented such that HTTP requests to it will result in the creation of a trace whose context will be propagated to the Cloud Pub/Sub publish API request.
+
+```bash
 gcloud config set project qwiklabs-gcp-02-854f9e3de16d
 git clone https://github.com/GoogleCloudPlatform/gke-tracing-demo
 cd gke-tracing-demo
 gcloud config set compute/region us-central1
 gcloud config set compute/zone us-central1-a
+```
 
-provider.tf
+If `provider.tf` contains static version string for the google provider as given below then remove it.
+
+```bash
 ...
 provider "google" {
   project = var.project
 }
 ...
+```
+
+initialize terraform
+
+```bash
 terraform init
+```
+
 ../scripts/generate-tfvars.sh
 gcloud config list
 terraform plan
@@ -121,7 +135,7 @@ Trace
 Monitor
 Logging
 
-## Debugging Apps on Google Kubernetes Engine 
+## Debugging Apps on Google Kubernetes Engine
 
 gcloud config set project qwiklabs-gcp-00-b3dbe849dc72
 gcloud config set compute/zone us-central1-b

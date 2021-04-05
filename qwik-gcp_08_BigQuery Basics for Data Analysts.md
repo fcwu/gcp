@@ -1,5 +1,7 @@
 # BigQuery Basics for Data Analysts
 
+https://www.qwiklabs.com/quests/69
+
 ## Introduction to SQL for BigQuery and Cloud SQL
 
 ## BigQuery: Qwik Start - Console
@@ -46,8 +48,8 @@ http://script.google.com/
 // Filename for data results
 var QUERY_NAME = "Most common words in all of Shakespeare's works";
 // Replace this value with your Google Cloud API project ID
-var PROJECT_ID = '<YOUR_PROJECT_ID>';
-if (!PROJECT_ID) throw Error('Project ID is required in setup');
+var PROJECT_ID = "<YOUR_PROJECT_ID>";
+if (!PROJECT_ID) throw Error("Project ID is required in setup");
 
 /**
  * Runs a BigQuery query; puts results into Sheet. You must enable
@@ -62,13 +64,13 @@ function runQuery() {
   // Replace sample with your own BigQuery query.
   var request = {
     query:
-        'SELECT ' +
-            'LOWER(word) AS word, ' +
-            'SUM(word_count) AS count ' +
-        'FROM [bigquery-public-data:samples.shakespeare] ' +
-        'GROUP BY word ' +
-        'ORDER BY count ' +
-        'DESC LIMIT 10'
+      "SELECT " +
+      "LOWER(word) AS word, " +
+      "SUM(word_count) AS count " +
+      "FROM [bigquery-public-data:samples.shakespeare] " +
+      "GROUP BY word " +
+      "ORDER BY count " +
+      "DESC LIMIT 10",
   };
   var queryResults = BigQuery.Jobs.query(request, PROJECT_ID);
   var jobId = queryResults.jobReference.jobId;
@@ -85,14 +87,14 @@ function runQuery() {
   var rows = queryResults.rows;
   while (queryResults.pageToken) {
     queryResults = BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId, {
-      pageToken: queryResults.pageToken
+      pageToken: queryResults.pageToken,
     });
     rows = rows.concat(queryResults.rows);
   }
 
   // Return null if no data returned.
   if (!rows) {
-    return Logger.log('No rows returned.');
+    return Logger.log("No rows returned.");
   }
 
   // Create the new results spreadsheet.
@@ -100,7 +102,7 @@ function runQuery() {
   var sheet = spreadsheet.getActiveSheet();
 
   // Add headers to Sheet.
-  var headers = queryResults.schema.fields.map(function(field) {
+  var headers = queryResults.schema.fields.map(function (field) {
     return field.name.toUpperCase();
   });
   sheet.appendRow(headers);
@@ -116,11 +118,13 @@ function runQuery() {
   }
 
   // Start storing data in row 2, col 1
-  var START_ROW = 2;      // skip header row
+  var START_ROW = 2; // skip header row
   var START_COL = 1;
-  sheet.getRange(START_ROW, START_COL, rows.length, headers.length).setValues(data);
+  sheet
+    .getRange(START_ROW, START_COL, rows.length, headers.length)
+    .setValues(data);
 
-  Logger.log('Results spreadsheet created: %s', spreadsheet.getUrl());
+  Logger.log("Results spreadsheet created: %s", spreadsheet.getUrl());
 }
 ```
 
@@ -137,19 +141,20 @@ function createColumnChart(spreadsheet) {
   // Retrieve the populated (first and only) Sheet.
   var sheet = spreadsheet.getSheets()[0];
   // Data range in Sheet is from cell A2 to B11
-  var START_CELL = 'A2';  // skip header row
-  var END_CELL = 'B11';
+  var START_CELL = "A2"; // skip header row
+  var END_CELL = "B11";
   // Place chart on Sheet starting on cell E5.
-  var START_ROW = 5;      // row 5
-  var START_COL = 5;      // col E
+  var START_ROW = 5; // row 5
+  var START_COL = 5; // col E
   var OFFSET = 0;
 
   // Create & place chart on the Sheet using above params.
-  var chart = sheet.newChart()
-     .setChartType(Charts.ChartType.COLUMN)
-     .addRange(sheet.getRange(START_CELL + ':' + END_CELL))
-     .setPosition(START_ROW, START_COL, OFFSET, OFFSET)
-     .build();
+  var chart = sheet
+    .newChart()
+    .setChartType(Charts.ChartType.COLUMN)
+    .addRange(sheet.getRange(START_CELL + ":" + END_CELL))
+    .setPosition(START_ROW, START_COL, OFFSET, OFFSET)
+    .build();
   sheet.insertChart(chart);
 }
 ```
@@ -160,8 +165,8 @@ function createColumnChart(spreadsheet) {
 // Filename for data results
 var QUERY_NAME = "Most common words in all of Shakespeare's works";
 // Replace this value with your Google Cloud API project ID
-var PROJECT_ID = '<YOUR_PROJECT_ID>';
-if (!PROJECT_ID) throw Error('Project ID is required in setup');
+var PROJECT_ID = "<YOUR_PROJECT_ID>";
+if (!PROJECT_ID) throw Error("Project ID is required in setup");
 
 /**
  * Runs a BigQuery query; puts results into Sheet. You must enable
@@ -176,13 +181,13 @@ function runQuery() {
   // Replace sample with your own BigQuery query.
   var request = {
     query:
-        'SELECT ' +
-            'LOWER(word) AS word, ' +
-            'SUM(word_count) AS count ' +
-        'FROM [bigquery-public-data:samples.shakespeare] ' +
-        'GROUP BY word ' +
-        'ORDER BY count ' +
-        'DESC LIMIT 10'
+      "SELECT " +
+      "LOWER(word) AS word, " +
+      "SUM(word_count) AS count " +
+      "FROM [bigquery-public-data:samples.shakespeare] " +
+      "GROUP BY word " +
+      "ORDER BY count " +
+      "DESC LIMIT 10",
   };
   var queryResults = BigQuery.Jobs.query(request, PROJECT_ID);
   var jobId = queryResults.jobReference.jobId;
@@ -199,14 +204,14 @@ function runQuery() {
   var rows = queryResults.rows;
   while (queryResults.pageToken) {
     queryResults = BigQuery.Jobs.getQueryResults(PROJECT_ID, jobId, {
-      pageToken: queryResults.pageToken
+      pageToken: queryResults.pageToken,
     });
     rows = rows.concat(queryResults.rows);
   }
 
   // Return null if no data returned.
   if (!rows) {
-    return Logger.log('No rows returned.');
+    return Logger.log("No rows returned.");
   }
 
   // Create the new results spreadsheet.
@@ -214,7 +219,7 @@ function runQuery() {
   var sheet = spreadsheet.getActiveSheet();
 
   // Add headers to Sheet.
-  var headers = queryResults.schema.fields.map(function(field) {
+  var headers = queryResults.schema.fields.map(function (field) {
     return field.name.toUpperCase();
   });
   sheet.appendRow(headers);
@@ -230,9 +235,11 @@ function runQuery() {
   }
 
   // Start storing data in row 2, col 1
-  var START_ROW = 2;      // skip header row
+  var START_ROW = 2; // skip header row
   var START_COL = 1;
-  sheet.getRange(START_ROW, START_COL, rows.length, headers.length).setValues(data);
+  sheet
+    .getRange(START_ROW, START_COL, rows.length, headers.length)
+    .setValues(data);
 
   // Return the spreadsheet object for later use.
   return spreadsheet;
@@ -248,19 +255,20 @@ function createColumnChart(spreadsheet) {
   // Retrieve the populated (first and only) Sheet.
   var sheet = spreadsheet.getSheets()[0];
   // Data range in Sheet is from cell A2 to B11
-  var START_CELL = 'A2';  // skip header row
-  var END_CELL = 'B11';
+  var START_CELL = "A2"; // skip header row
+  var END_CELL = "B11";
   // Place chart on Sheet starting on cell E5.
-  var START_ROW = 5;      // row 5
-  var START_COL = 5;      // col E
+  var START_ROW = 5; // row 5
+  var START_COL = 5; // col E
   var OFFSET = 0;
 
   // Create & place chart on the Sheet using above params.
-  var chart = sheet.newChart()
-     .setChartType(Charts.ChartType.COLUMN)
-     .addRange(sheet.getRange(START_CELL + ':' + END_CELL))
-     .setPosition(START_ROW, START_COL, OFFSET, OFFSET)
-     .build();
+  var chart = sheet
+    .newChart()
+    .setChartType(Charts.ChartType.COLUMN)
+    .addRange(sheet.getRange(START_CELL + ":" + END_CELL))
+    .setPosition(START_ROW, START_COL, OFFSET, OFFSET)
+    .build();
   sheet.insertChart(chart);
 
   // Return the chart object for later use.
@@ -281,17 +289,24 @@ function createSlidePresentation(spreadsheet, chart) {
   // Populate the title slide.
   var [title, subtitle] = deck.getSlides()[0].getPageElements();
   title.asShape().getText().setText(QUERY_NAME);
-  subtitle.asShape().getText().setText('via GCP and G Suite APIs:\n' +
-    'Google Apps Script, BigQuery, Sheets, Slides');
+  subtitle
+    .asShape()
+    .getText()
+    .setText(
+      "via GCP and G Suite APIs:\n" +
+        "Google Apps Script, BigQuery, Sheets, Slides"
+    );
 
   // Data range to copy is from cell A1 to B11
-  var START_CELL = 'A1';  // include header row
-  var END_CELL = 'B11';
+  var START_CELL = "A1"; // include header row
+  var END_CELL = "B11";
   // Add the table slide and insert an empty table on it of
   // the dimensions of the data range; fails if Sheet empty.
   var tableSlide = deck.appendSlide(SlidesApp.PredefinedLayout.BLANK);
-  var sheetValues = spreadsheet.getSheets()[0].getRange(
-      START_CELL + ':' + END_CELL).getValues();
+  var sheetValues = spreadsheet
+    .getSheets()[0]
+    .getRange(START_CELL + ":" + END_CELL)
+    .getValues();
   var table = tableSlide.insertTable(sheetValues.length, sheetValues[0].length);
 
   // Populate the table with spreadsheet data.
@@ -315,10 +330,10 @@ function createSlidePresentation(spreadsheet, chart) {
  */
 function createBigQueryPresentation() {
   var spreadsheet = runQuery();
-  Logger.log('Results spreadsheet created: %s', spreadsheet.getUrl());
+  Logger.log("Results spreadsheet created: %s", spreadsheet.getUrl());
   var chart = createColumnChart(spreadsheet);
   var deck = createSlidePresentation(spreadsheet, chart);
-  Logger.log('Results slide deck created: %s', deck.getUrl());
+  Logger.log("Results slide deck created: %s", deck.getUrl());
 }
 ```
 
@@ -326,16 +341,16 @@ function createBigQueryPresentation() {
 
 https://datastudio.google.com/
 
-## Insights from Data with BigQuery: Challenge Lab 
+## Insights from Data with BigQuery: Challenge Lab
 
 ### Query 1: Total Confirmed Cases
 
 ```bash
 SELECT country_code, subregion1_code, subregion2_code, cumulative_confirmed
-FROM `bigquery-public-data.covid19_open_data.covid19_open_data` 
+FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
 WHERE date = "2020-04-15"
 SELECT SUM(cumulative_confirmed) as total_cases_worldwide
-FROM `bigquery-public-data.covid19_open_data.covid19_open_data` 
+FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
 WHERE date = "2020-04-15"
 ```
 
@@ -374,20 +389,20 @@ ORDER BY total_confirmed_cases DESC ) WHERE total_confirmed_cases > 1000
 ### Query 4: Fatality Ratio
 
 ```bash
-SELECT 
-  SUM(cumulative_confirmed) AS total_confirmed_cases, 
+SELECT
+  SUM(cumulative_confirmed) AS total_confirmed_cases,
   SUM(cumulative_deceased) AS total_deaths,
   SUM(cumulative_deceased) / SUM(cumulative_confirmed) * 100 AS case_fatality_ratio
-FROM `bigquery-public-data.covid19_open_data.covid19_open_data` 
+FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
 WHERE country_name = "Italy" AND date BETWEEN "2020-04-01" AND "2020-04-30"
 ```
 
 ### Query 5: Identifying specific day
 
 ```bash
-SELECT 
+SELECT
   date
-FROM `bigquery-public-data.covid19_open_data.covid19_open_data` 
+FROM `bigquery-public-data.covid19_open_data.covid19_open_data`
 WHERE country_name = "Italy" AND cumulative_deceased > 10000
 ORDER BY date
 LIMIT 1
@@ -551,7 +566,7 @@ GROUP BY date
 1. ADD above query
 2. Click on EXPLORE DATA > Explore with Data Studio.
 3. Give access to Data Studio and authorize it to control BigQuery.
-    If you fail to create a report for the very first time login of Data Studio, click + Blank Report option and accept the Terms of Service. Then, go back again to BigQuery page and click Explore with Data Studio again.
+   If you fail to create a report for the very first time login of Data Studio, click + Blank Report option and accept the Terms of Service. Then, go back again to BigQuery page and click Explore with Data Studio again.
 4. Create a new Time series chart in the new Data Studio report by selecting Add a chart > Time series Chart.
 5. Add country_cases and country_deaths to the Metric field.
 6. Click Save to commit the change.

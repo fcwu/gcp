@@ -1,5 +1,7 @@
 # Set up and Configure a Cloud Environment in Google Cloud
 
+[Set Up and Configure a Cloud Environment in Google Cloud](https://www.qwiklabs.com/quests/119)
+
 ## Cloud IAM: Qwik Start
 
 done before

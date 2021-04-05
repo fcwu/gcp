@@ -1,10 +1,12 @@
 # Machine Learning APIs
 
-## Introduction to APIs in Google 
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+## Introduction to APIs in Google
 
 https://developers.google.com/oauthplayground/
 
-## Extract, Analyze, and Translate Text from Images with the Cloud ML APIs 
+## Extract, Analyze, and Translate Text from Images with the Cloud ML APIs
 
 - Creating a Vision API request and calling the API with curl
 - Using the text detection (OCR) method of the Vision API
@@ -101,7 +103,7 @@ mid: https://developers.google.com/knowledge-graph/
 
 language list: https://cloud.google.com/translate/docs/languages
 
-## Classify Text into Categories with the Natural Language API 
+## Classify Text into Categories with the Natural Language API
 
 What you'll learn
 
@@ -112,11 +114,11 @@ What you'll learn
 - Know what category the sentense is
 - Use Python to retrieve sentense in BigQuery and analyze the category by Natural language API
 
-## Detect Labels, Faces, and Landmarks in Images with the Cloud Vision API 
+## Detect Labels, Faces, and Landmarks in Images with the Cloud Vision API
 
 Done before
 
-## Entity and Sentiment Analysis with the Natural Language API 
+## Entity and Sentiment Analysis with the Natural Language API
 
 What you'll learn
 

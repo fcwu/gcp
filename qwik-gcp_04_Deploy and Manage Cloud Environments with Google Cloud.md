@@ -1,5 +1,7 @@
 # Deploy and Manage Cloud Environments with Google Cloud
 
+[Deploy and Manage Cloud Environments with Google Cloud](https://www.qwiklabs.com/quests/121)
+
 ## Orchestrating the Cloud with Kubernetes
 
 https://github.com/kelseyhightower/app
@@ -167,12 +169,12 @@ git push origin master
 In the Cloud Platform Console, click Navigation menu > Cloud Build > Triggers.
 Click Create trigger.
 Set the following trigger settings:
-    Name:sample-app-tags
-    Event: Push new tag
-    Select your newly created sample-app repository.
-    Tag: v.*
-    Build configuration: Cloud Build configuration file (yaml or json)
-    Cloud Build configuration file location: /cloudbuild.yaml
+Name:sample-app-tags
+Event: Push new tag
+Select your newly created sample-app repository.
+Tag: v.\*
+Build configuration: Cloud Build configuration file (yaml or json)
+Cloud Build configuration file location: /cloudbuild.yaml
 
 Prepare your Kubernetes Manifests for use in Spinnaker
 
@@ -285,7 +287,7 @@ gcloud source repos create default
 ## Deploy and Manage Cloud Environments with Google Cloud: Challenge Lab
 
 ```bash
-gcloud deployment-manager deployments create kraken-prod-network --config 
+gcloud deployment-manager deployments create kraken-prod-network --config
 gcloud container clusters get-credentials kraken-prod --zone us-east1-b
 gcloud container clusters get-credentials spinnaker-tutorial --zone us-east1-b
 gcloud container clusters get-credentials valkyrie-dev --zone us-east1-d

@@ -1,12 +1,14 @@
 # Cloud SQL
 
+[Cloud SQL](Cloud SQL)
+
 DB 分類
 
 - BigTable: HBase, low-latency
 - DataStore: Based on BigTable, but add MongoDB features
 - Cloud SQL: pgSQL, MySQL...
 - Cloud Spanner: horizontal scale SQL
-- BigQuery: 無敵星星SQL
+- BigQuery: 無敵星星 SQL
 
 ## Introduction to SQL for BigQuery and Cloud SQL
 

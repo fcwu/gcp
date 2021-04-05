@@ -1,5 +1,7 @@
 # Getting Started with Go on Google Cloud
 
+[Getting Started with Go on Google Cloud](https://www.qwiklabs.com/quests/129)
+
 ## Use Go Code to Work with Google Cloud Data Sources
 
 git clone https://github.com/GoogleCloudPlatform/DIY-Tools.git
@@ -18,7 +20,6 @@ https://8080-dot-11197143-dot-devshell.appspot.com/fs/qwiklabs-gcp-02-e1a49657e8
 gcloud app deploy app.yaml --project $PROJECT_ID -q
 export TARGET_URL=https://$(gcloud app describe --format="value(defaultHostname)")
 
-
     Firestore :
 
 [SERVICE_URL]/fs/[PROJECT_ID]/[COLLECTION]/[DOCUMENT]
@@ -27,7 +28,7 @@ export TARGET_URL=https://$(gcloud app describe --format="value(defaultHostname)
 
 [SERVICE_URL]/bq/[PROJECT_ID]/[DATASET]/[TABLE]
 
-## Deploy Go Apps on Google Cloud Serverless Platforms 
+## Deploy Go Apps on Google Cloud Serverless Platforms
 
 export PROJECT_ID=$(gcloud info --format="value(config.project)")
 export PROJECT_ID=qwiklabs-gcp-00-ab9c9bc54885
@@ -43,7 +44,7 @@ cd ~/DIY-Tools/gcp-data-drive
 ### cloud run
 
 gcloud builds submit --config cloudbuild_run.yaml \
-   --project $PROJECT_ID --no-source \
+ --project $PROJECT_ID --no-source \
 --substitutions=_GIT_SOURCE_BRANCH="master",_GIT_SOURCE_URL="https://github.com/GoogleCloudPlatform/DIY-Tools"
 export CLOUD_RUN_SERVICE_URL=$(gcloud run services --platform managed describe gcp-data-drive --region us-central1 --format="value(status.url)")
 curl $CLOUD_RUN_SERVICE_URL/fs/$PROJECT_ID/symbols/product/symbol
@@ -52,7 +53,7 @@ curl $CLOUD_RUN_SERVICE_URL/bq/$PROJECT_ID/publicviews/ca_zip_codes
 ### cloud function
 
 gcloud builds submit --config cloudbuild_gcf.yaml \
-   --project $PROJECT_ID --no-source \
+ --project $PROJECT_ID --no-source \
 --substitutions=_GIT_SOURCE_BRANCH="master",_GIT_SOURCE_URL="https://github.com/GoogleCloudPlatform/DIY-Tools"
 gcloud alpha functions add-iam-policy-binding gcp-data-drive --member=allUsers --role=roles/cloudfunctions.invoker
 export CF_TRIGGER_URL=$(gcloud functions describe gcp-data-drive --format="value(httpsTrigger.url)")
@@ -65,9 +66,9 @@ https://cloud.google.com/functions/docs/calling/cloud-firestore#functions_fireba
 
 ### App Engine
 
-gcloud builds submit  --config cloudbuild_appengine.yaml \
-   --project $PROJECT_ID --no-source \
-   --substitutions=_GIT_SOURCE_BRANCH="master",_GIT_SOURCE_URL="https://github.com/GoogleCloudPlatform/DIY-Tools"
+gcloud builds submit --config cloudbuild_appengine.yaml \
+ --project $PROJECT_ID --no-source \
+ --substitutions=\_GIT_SOURCE_BRANCH="master",\_GIT_SOURCE_URL="https://github.com/GoogleCloudPlatform/DIY-Tools"
 
 export TARGET_URL=https://$(gcloud app describe --format="value(defaultHostname)")
 curl $TARGET_URL/fs/$PROJECT_ID/symbols/product/symbol
@@ -77,11 +78,11 @@ nano loadgen.sh
 #!/bin/bash
 for ((i=1;i<=1000;i++));
 do
-   curl $TARGET_URL/bq/$PROJECT_ID/publicviews/ca_zip_codes > /dev/null &
+curl $TARGET_URL/bq/$PROJECT_ID/publicviews/ca_zip_codes > /dev/null &
 done
 chmod +x loadgen.sh
 
-## App Engine: Qwik Start - Go 
+## App Engine: Qwik Start - Go
 
 git clone https://github.com/GoogleCloudPlatform/golang-samples.git
 cd golang-samples/appengine/go11x/helloworld
@@ -99,7 +100,6 @@ gcloud alpha functions add-iam-policy-binding HelloWorld --member=allUsers --rol
 curl https://<REGION>-$GOOGLE_CLOUD_PROJECT.cloudfunctions.net/HelloWorld
 
 gcloud functions deploy Gopher --runtime go111 --trigger-http
-
 
 cd golang-samples-master/functions/codelabs/gopher
 go test -v

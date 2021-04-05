@@ -24,8 +24,6 @@ git clone https://github.com/GoogleCloudPlatform/training-data-analyst
 
 In AI Platform Notebooks, navigate to training-data-analyst/self-paced-labs/ai-platform-qwikstart and open ai_platform_qwik_start.ipynb.
 
-
-
 ## Classify Images of Clouds in the Cloud with AutoML Vision
 
 Enable APIs & Services > Library > Cloud AutoML API.
